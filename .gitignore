@@ -3,3 +3,4 @@ venv/
 secret.json
 chromedriver
 data/
+__pycache__/
