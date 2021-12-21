@@ -8,21 +8,22 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from audio_manager import audio_manager
 
+
 class Webscraper:
     def __init__(self) -> None:
         self.base_url = "https://oauth.reddit.com/"
-        secret = json.load(open("secret.json", "r"))
+        self.secret = json.load(open("secret.json", "r"))
 
         self.auth = requests.auth.HTTPBasicAuth(
-            secret["client"], secret["token"])
-        self.data = {'grant_type': 'password',
-                     'username': secret["user_name"],
-                     'password': secret["password"]}
+            self.secret["client"], self.secret["token"])
+        self.auth_data = {'grant_type': 'password',
+                     'username': self.secret["user_name"],
+                     'password': self.secret["password"]}
 
     def authenticate(self) -> None:
         headers = {'User-Agent': 'MyBot/0.0.1'}
         res = requests.post('https://www.reddit.com/api/v1/access_token',
-                            auth=self.auth, data=self.data, headers=headers)
+                            auth=self.auth, data=self.auth_data, headers=headers)
         self.TOKEN = res.json()['access_token']
 
         self.headers = {**headers, **{'Authorization': f"bearer {self.TOKEN}"}}
@@ -42,17 +43,72 @@ class Webscraper:
         os.system("mkdir data/img")
         os.system("mkdir data/audio")
 
-    def get_data(self, url, comment_count):
-        data = {}
-        data["title"] = {}
-        data["total_length"] = 0
-        data["comments"] = []
+    def get_data(self, url, video_length):
+        self.data = {}
+        self.data["title"] = {}
+        self.data["total_length"] = 0
+        self.data["comments"] = []
 
-        img_folder = "./data/img/"
-        audio_folder = "./data/audio/"
+        self.img_folder = "./data/img/"
+        self.audio_folder = "./data/audio/"
 
+        self.driver = self.init_driver(url)
+        self.click_reddit_buttons()
+        self.get_reddit_title()
+
+        comments_container = self.get_reddit_comments_container()
+
+        xpath = "*"
+
+        index = 0
+        while (self.data["total_length"] < video_length):
+            text1, img_path1, audio_path1, upvotes1, audio_length1 = self.get_reddit_comment(
+                str(index)+"a", xpath, comments_container
+            )
+            xpath += "/following-sibling::div"
+            text2, img_path2, audio_path2, upvotes2, audio_length2 = self.get_reddit_comment(
+                str(index)+"b", xpath, comments_container
+            )
+
+            self.data["comments"].append({})
+            self.data["comments"][index]["text"] = text1
+            self.data["comments"][index]["img"] = img_path1
+            self.data["comments"][index]["audio"] = audio_path1
+            self.data["comments"][index]["upvotes"] = upvotes1
+            self.data["comments"][index]["length"] = audio_length1
+            self.data["comments"][index]["replies"] = []
+            self.data["total_length"] += audio_length1
+
+            if upvotes2/upvotes1 >= 0.3:
+                self.data["comments"][index]["replies"].append({})
+                self.data["comments"][index]["replies"][0]["text"] = text2
+                self.data["comments"][index]["replies"][0]["img"] = img_path2
+                self.data["comments"][index]["replies"][0]["audio"] = audio_path2
+                self.data["comments"][index]["replies"][0]["upvotes"] = upvotes2
+                self.data["comments"][index]["replies"][0]["length"] = audio_length2
+                self.data["total_length"] += audio_length2
+
+            text = ""
+            # loop through divs until the div that says more replies (end of current comment)
+            while(text[-13:] != ' more replies'):
+                xpath += "/following-sibling::div"
+                comment = comments_container.find_element(By.XPATH, xpath)
+                try:
+                    text = comment.find_element(
+                        By.TAG_NAME, "p").get_attribute("innerText")
+                except:
+                    pass
+
+            xpath += "/following-sibling::div"
+            index += 1
+            self.driver.implicitly_wait(0.2)
+
+        self.driver.quit()
+        return self.data
+
+    def init_driver(self, url):
         # Driver init
-        ser = Service("./chromedriver")
+        ser = Service(self.secret["chromedriver"])
         op = webdriver.ChromeOptions()
         prefs = {"profile.default_content_setting_values.notifications": 2}
         op.add_experimental_option("prefs", prefs)
@@ -64,13 +120,16 @@ class Webscraper:
         driver.get(url)
         driver.maximize_window()
 
+        return driver
+
+    def click_reddit_buttons(self):
         # Click NSFW button
         try:
-            nsfw_button = driver.find_element(
+            nsfw_button = self.driver.find_element(
                 By.XPATH, "/html/body/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/button"
             )
             nsfw_button.click()
-            nsfw_button2 = driver.find_element(
+            nsfw_button2 = self.driver.find_element(
                 By.XPATH, "/html/body/div[1]/div/div[2]/div[2]/div/div[3]/div[1]/div[2]/div[1]/div/div[5]/div/div/button"
             )
             nsfw_button2.click()
@@ -78,125 +137,78 @@ class Webscraper:
             pass
 
         # Click cookie button
-        cookies_button = driver.find_element(
+        cookies_button = self.driver.find_element(
             By.XPATH, "/html/body/div[1]/div/div[2]/div[3]/div/section/div/section/section/form[2]/button")
         cookies_button.click()
 
+    def get_reddit_title(self):
         # Get title
-        title_element = driver.find_element(
+        title_element = self.driver.find_element(
             By.CSS_SELECTOR, 'div[data-testid=post-container]')
-        
+
         # ---- text
         text = title_element.find_element(
-            By.TAG_NAME, "h1").get_attribute("innerText")   
-        
+            By.TAG_NAME, "h1").get_attribute("innerText")
+
         # ---- screenshot
-        img_path = img_folder + "title.png"
+        img_path = self.img_folder + "title.png"
         title_element.screenshot(img_path)
-       
-        # ---- audio 
-        audio_path = audio_folder + "title.mp3"
+
+        # ---- audio
+        audio_path = self.audio_folder + "title.mp3"
         audio_length = audio_manager.save_audio(text, audio_path)
 
-        data["title"]["text"] = text
-        data["title"]["img"] = img_path
-        data["title"]["audio"] = audio_path
-        data["title"]["audio_length"] = audio_length
+        self.data["title"]["text"] = text
+        self.data["title"]["img"] = img_path
+        self.data["title"]["audio"] = audio_path
+        self.data["title"]["audio_length"] = audio_length
+        self.data["total_length"] += audio_length
 
-        data["total_length"] += audio_length
-
+    def get_reddit_comments_container(self):
         try:
-            comments_container = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div[2]/div/div[3]/div[1]/div[2]/div[5]/div/div/div')
+            return self.driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div[2]/div/div[3]/div[1]/div[2]/div[5]/div/div/div')
         except:
-            comments_container = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div[2]/div/div[3]/div[1]/div[2]/div[6]/div/div/div')
+            return self.driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div[2]/div/div[3]/div[1]/div[2]/div[6]/div/div/div')
 
+    def get_reddit_comment(self, name, xpath, comments_container):
+        # Main comment
+        comment = comments_container.find_element(By.XPATH, xpath)
 
-        xpath = "*"
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView();", comment)
+        self.driver.execute_script("scrollBy(0,-250);")
 
-        for i in range(10):
-            data["comments"].append({})
+        # ---- text
+        text = comment.find_element(
+            By.TAG_NAME, "p").get_attribute("innerText")
 
-            # Main comment
-            comment = comments_container.find_element(By.XPATH, xpath)
+        # ---- screenshot
+        img_path = self.img_folder + "comment_" + name + ".png"
+        comment.screenshot(img_path)
 
-            driver.execute_script(
-                "arguments[0].scrollIntoView();", comment)
-            driver.execute_script("scrollBy(0,-250);")
+        # ---- audio
+        audio_path = self.audio_folder + "comment_" + name + ".mp3"
+        audio_length = audio_manager.save_audio(text, audio_path)
 
-            # ---- text
-            text = comment.find_element(
-                By.TAG_NAME, "p").get_attribute("innerText")
-            
-            # ---- screenshot
-            img_path = img_folder + f"comment_{i}a.png"
-            comment.screenshot(img_path)
-        
-            # ---- audio 
-            audio_path = audio_folder + f"comment_{i}a.mp3"
-            audio_length = audio_manager.save_audio(text, audio_path)
-
-            # ---- upvotes
+        # ---- upvotes
+        try:
             upvotes = comment.find_element(
-                By.XPATH, '//button[@aria-label="upvote"]/following-sibling::div').get_attribute("innerText")
+                By.XPATH, './/button[@aria-label="upvote"]/following-sibling::div').get_attribute("innerText")
+        except:
+            upvotes = "0"
 
-            data["comments"][i]["text"] = text
-            data["comments"][i]["img"] = img_path
-            data["comments"][i]["audio"] = audio_path
-            data["comments"][i]["upvotes"] = upvotes
-            data["comments"][i]["audio_length"] = audio_length
-            data["comments"][i]["replies"] = []
+        if "k" in upvotes:
+            if "." in upvotes:
+                number_str = upvotes[:-1]
+                number = int(number_str.split(".")[0])
+                decimal = int(number_str.split(".")[1])
+                upvotes = number * 1000 + decimal * 100
+            else:
+                upvotes = int(upvotes[:-1]) * 1000
+        else:
+            upvotes = int(upvotes)
 
-            data["total_length"] += audio_length
-
-            # Reply 1
-            xpath += "/following-sibling::div"
-            comment = comments_container.find_element(By.XPATH, xpath)
-
-            driver.execute_script(
-                "arguments[0].scrollIntoView();", comment)
-            driver.execute_script("scrollBy(0,-250);")
-
-            # ---- text
-            text = comment.find_element(
-                By.TAG_NAME, "p").get_attribute("innerText")
-
-            # ---- screenshot
-            img_path = img_folder + f"comment_{i}b.png"
-            comment.screenshot(img_path)    
-   
-            # ---- audio 
-            audio_path = audio_folder + f"comment_{i}b.mp3"
-            audio_length = audio_manager.save_audio(text, audio_path)
-
-
-            # ---- upvotes
-            upvotes = comment.find_element(
-                By.XPATH, '//button[@aria-label="upvote"]/following-sibling::div').get_attribute("innerText")
-
-            data["comments"][i]["replies"].append({})
-            data["comments"][i]["replies"][0]["text"] = text
-            data["comments"][i]["replies"][0]["img"] = img_path
-            data["comments"][i]["replies"][0]["audio"] = audio_path
-            data["comments"][i]["replies"][0]["upvotes"] = upvotes
-            data["comments"][i]["replies"][0]["length"] = audio_length
-
-            data["total_length"] += audio_length
-
-            # loop through divs until the div that says more replies (end of current comment)
-            while(text[-13:] != ' more replies'):
-                xpath += "/following-sibling::div"
-                comment = comments_container.find_element(By.XPATH, xpath)
-
-                try:
-                    text = comment.find_element(
-                        By.TAG_NAME, "p").get_attribute("innerText")
-                except:
-                    pass
-            driver.implicitly_wait(0.2)
-
-            xpath += "/following-sibling::div"
-
-        return data
+        return text, img_path, audio_path, upvotes, audio_length
 
 
 webscraper = Webscraper()

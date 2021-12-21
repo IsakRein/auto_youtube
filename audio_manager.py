@@ -9,8 +9,10 @@ class AudioManager:
         self.engine.save_to_file(text, path)
         self.engine.runAndWait()
         self.engine.stop()
+        return self.get_audio_length(path)
+
+    def get_audio_length(self, path):
         clip = AIFF(path)
         return clip.info.length
-
 
 audio_manager = AudioManager()
