@@ -1,14 +1,289 @@
 from webscraper import webscraper
 from video_creator import Video_Creator
-from mutagen.aiff import AIFF
+from audio_manager import audio_manager
+from data_manager import secret, data_object, save_data_object
 
 # webscraper.authenticate()
+# audio_manager.authenticate()
 # webscraper.clear_data()
 # post_url = "https://reddit.com/" + webscraper.get_todays_url() + "?sort=top"
 # data = webscraper.get_data(post_url, 200)
 
-data = {'title': {'text': "If a dog is man's best friend, what's man's worst enemy?", 'img': './data/img/title.png', 'audio': './data/audio/title.mp3', 'audio_length': 3.395374149659864}, 'total_length': 200.62775510204077, 'comments': [{'text': 'Mosquito.', 'img': './data/img/comment_0a.png', 'audio': './data/audio/comment_0a.mp3', 'upvotes': 57800, 'length': 0.9020408163265307, 'replies': []}, {'text': 'Another man', 'img': './data/img/comment_1a.png', 'audio': './data/audio/comment_1a.mp3', 'upvotes': 20700, 'length': 0.929795918367347, 'replies': []}, {'text': 'Dog-1', 'img': './data/img/comment_2a.png', 'audio': './data/audio/comment_2a.mp3', 'upvotes': 18200, 'length': 0.8604081632653061, 'replies': [{'text': 'Underdog', 'img': './data/img/comment_2b.png', 'audio': './data/audio/comment_2b.mp3', 'upvotes': 8300, 'length': 0.758639455782313}]}, {'text': 'The “x” button in ads when you try to click them', 'img': './data/img/comment_3a.png', 'audio': './data/audio/comment_3a.mp3', 'upvotes': 17400, 'length': 2.6598639455782314, 'replies': []}, {'text': 'Flying cockroach', 'img': './data/img/comment_4a.png', 'audio': './data/audio/comment_4a.mp3', 'upvotes': 12500, 'length': 1.3414965986394558, 'replies': [{'text': 'I used to live in an apartment complex where going to the laundry room meant walking through an outdoor hallway that had flying cockroaches.', 'img': './data/img/comment_4b.png', 'audio': './data/audio/comment_4b.mp3', 'upvotes': 4300, 'length': 6.883265306122449}]}, {'text': 'Two goats in a trenchcoat', 'img': './data/img/comment_5a.png', 'audio': './data/audio/comment_5a.mp3', 'upvotes': 7100, 'length': 1.623673469387755, 'replies': []}, {'text': 'The Dutch', 'img': './data/img/comment_6a.png', 'audio': './data/audio/comment_6a.mp3', 'upvotes': 6500, 'length': 0.758639455782313, 'replies': [{'text': '"There are only two things I can\'t stand in this world: People who are intolerant of other people\'s cultures and the Dutch."', 'img': './data/img/comment_6b.png', 'audio': './data/audio/comment_6b.mp3', 'upvotes': 2900, 'length': 6.332789115646259}]}, {'text': 'Himself', 'img': './data/img/comment_7a.png', 'audio': './data/audio/comment_7a.mp3', 'upvotes': 5700, 'length': 0.9621768707482993, 'replies': []}, {'text': 'That parasite in the Amazon that swims up your peehole.', 'img': './data/img/comment_8a.png', 'audio': './data/audio/comment_8a.mp3', 'upvotes': 5200, 'length': 2.881904761904762, 'replies': []}, {'text': 'Geese', 'img': './data/img/comment_9a.png', 'audio': './data/audio/comment_9a.mp3', 'upvotes': 4700, 'length': 0.7077551020408164, 'replies': []}, {'text': 'Bedbugs', 'img': './data/img/comment_10a.png', 'audio': './data/audio/comment_10a.mp3', 'upvotes': 4300, 'length': 0.9251700680272109, 'replies': []}, {'text': 'Erectile dysfunction', 'img': './data/img/comment_11a.png', 'audio': './data/audio/comment_11a.mp3', 'upvotes': 2600, 'length': 1.5774149659863945, 'replies': [{'text': "I tried really hard to upvote this but I couldn't manage it.", 'img': './data/img/comment_11b.png', 'audio': './data/audio/comment_11b.mp3', 'upvotes': 1400, 'length': 3.24734693877551}]}, {'text': 'Really, no one said it?', 'img': './data/img/comment_12a.png', 'audio': './data/audio/comment_12a.mp3', 'upvotes': 2100, 'length': 1.71156462585034, 'replies': []}, {'text': 'Not dog', 'img': './data/img/comment_13a.png', 'audio': './data/audio/comment_13a.mp3', 'upvotes': 1800, 'length': 0.767891156462585, 'replies': [{'text': "Dogn't", 'img': './data/img/comment_13b.png', 'audio': './data/audio/comment_13b.mp3', 'upvotes': 1400, 'length': 0.6614965986394558}]}, {'text': 'disease. War is a close second.', 'img': './data/img/comment_14a.png', 'audio': './data/audio/comment_14a.mp3', 'upvotes': 1300, 'length': 2.317551020408163, 'replies': [{'text': 'Plague, War, Famine, and Death. These horsemen have ridden this Earth since man first knew the sorrow of true loss. the way to end their threats is to banish them with the opposite. Plague is not defeated by piling more plague into one place, as quarantines during the black death did, but to treat all people with a healthy diet, a safe place to live, and the decency of a human BEFORE they get sick so they have some strength to fight illness when it hits. then give people an easy way to recover from the illness in a safe isolation without the mortal fear of debt destroying their lives. War is NEVER ended by conquering every adversary, because there will always be an unequal need for resources as long as 2 humans exist on the same Earth. Thus, we must share what we can with those who need it regardless of where they live or where you live. Famine is not solved by killing others for their food/resources, but by creating enough food for all, and not wasting any. Death cannot be conquered by hiding away from the world and the things that might hurt you there, but by living your life to the fullest so that all of creation might remember you, carry the lessons you learned and taught, and perhaps even erect a statue.', 'img': './data/img/comment_14b.png', 'audio': './data/audio/comment_14b.mp3', 'upvotes': 1100, 'length': 62.541496598639455}]}, {'text': 'Man-bear-pig.', 'img': './data/img/comment_15a.png', 'audio': './data/audio/comment_15a.mp3', 'upvotes': 908, 'length': 0.9621768707482993, 'replies': []}, {'text': 'Depression', 'img': './data/img/comment_16a.png', 'audio': './data/audio/comment_16a.mp3', 'upvotes': 586, 'length': 0.846530612244898, 'replies': []}, {'text': 'other people', 'img': './data/img/comment_17a.png', 'audio': './data/audio/comment_17a.mp3', 'upvotes': 563, 'length': 0.85578231292517, 'replies': []}, {'text': 'Legos on the floor', 'img': './data/img/comment_18a.png', 'audio': './data/audio/comment_18a.mp3', 'upvotes': 560, 'length': 1.262857142857143, 'replies': [{'text': "I knew a guy who had a lot of lego, used to keep it all over the house on display in glass boxes and on shelves and whatever, and it was always really fun to go over and see his latest stuff. Funny thing is, despite having all that lego there was never any on the floor lying around. You could walk barefoot with impunity and it was fine, whereas in a person's house where they don't have loads of lego on display it still always sometimes gets you. Funny thing is the guy was later killed by a goddamn octopus.", 'img': './data/img/comment_18b.png', 'audio': './data/audio/comment_18b.mp3', 'upvotes': 220, 'length': 26.598639455782312}]}, {'text': 'That asshole driver in the other car.', 'img': './data/img/comment_19a.png', 'audio': './data/audio/comment_19a.mp3', 'upvotes': 501, 'length': 2.0029931972789115, 'replies': []}, {'text': 'Politicians', 'img': './data/img/comment_20a.png', 'audio': './data/audio/comment_20a.mp3', 'upvotes': 395, 'length': 1.1795918367346938, 'replies': []}, {'text': 'Fleas', 'img': './data/img/comment_21a.png', 'audio': './data/audio/comment_21a.mp3', 'upvotes': 313, 'length': 0.7308843537414966, 'replies': []}, {'text': 'Dog shit', 'img': './data/img/comment_22a.png', 'audio': './data/audio/comment_22a.mp3', 'upvotes': 243, 'length': 0.8742857142857143, 'replies': [{'text': 'I know worse people.', 'img': './data/img/comment_22b.png', 'audio': './data/audio/comment_22b.mp3', 'upvotes': 75, 'length': 1.2998639455782313}]}, {'text': 'Man', 'img': './data/img/comment_23a.png', 'audio': './data/audio/comment_23a.mp3', 'upvotes': 230, 'length': 0.6244897959183674, 'replies': []}, {'text': 'Human Stupidity', 'img': './data/img/comment_24a.png', 'audio': './data/audio/comment_24a.mp3', 'upvotes': 136, 'length': 1.3461224489795918, 'replies': [{'text': 'Agreed. "Never underestimate power of stupid people in large groups" ~George Carlin (Just felt like quoting)', 'img': './data/img/comment_24b.png', 'audio': './data/audio/comment_24b.mp3', 'upvotes': 57, 'length': 6.231020408163265}]}, {'text': "I dunno about you lot but I'm definitely my own worst enemy. Just..far too much self sabotage, it's redonk", 'img': './data/img/comment_25a.png', 'audio': './data/audio/comment_25a.mp3', 'upvotes': 121, 'length': 6.97578231292517, 'replies': []}, {'text': "Dog's enemy", 'img': './data/img/comment_26a.png', 'audio': './data/audio/comment_26a.mp3', 'upvotes': 104, 'length': 0.9529251700680272, 'replies': [{'text': 'Squirrels?', 'img': './data/img/comment_26b.png', 'audio': './data/audio/comment_26b.mp3', 'upvotes': 60, 'length': 0.8927891156462585}]}, {'text': "Chocolate. Delicious, but Deadly (read in Troy McClure's voice).", 'img': './data/img/comment_27a.png', 'audio': './data/audio/comment_27a.mp3', 'upvotes': 82, 'length': 4.302040816326531, 'replies': []}, {'text': 'The other crabs in the bucket', 'img': './data/img/comment_28a.png', 'audio': './data/audio/comment_28a.mp3', 'upvotes': 70, 'length': 1.6144217687074829, 'replies': []}, {'text': 'Time', 'img': './data/img/comment_29a.png', 'audio': './data/audio/comment_29a.mp3', 'upvotes': 65, 'length': 0.7308843537414966, 'replies': []}, {'text': 'Women', 'img': './data/img/comment_30a.png', 'audio': './data/audio/comment_30a.mp3', 'upvotes': 56, 'length': 0.6522448979591837, 'replies': []}, {'text': 'His own damn self.', 'img': './data/img/comment_31a.png', 'audio': './data/audio/comment_31a.mp3', 'upvotes': 49, 'length': 1.3923809523809523, 'replies': [{'text': 'Police dogs', 'img': './data/img/comment_31b.png', 'audio': './data/audio/comment_31b.mp3', 'upvotes': 52, 'length': 1.1610884353741497}]}, {'text': 'Dinkleberg', 'img': './data/img/comment_32a.png', 'audio': './data/audio/comment_32a.mp3', 'upvotes': 50, 'length': 0.9251700680272109, 'replies': []}, {'text': 'False sexual assault clames', 'img': './data/img/comment_33a.png', 'audio': './data/audio/comment_33a.mp3', 'upvotes': 35, 'length': 2.1140136054421768, 'replies': [{'text': 'clams', 'img': './data/img/comment_33b.png', 'audio': './data/audio/comment_33b.mp3', 'upvotes': 14, 'length': 0.8835374149659864}]}, {'text': '-dog', 'img': './data/img/comment_34a.png', 'audio': './data/audio/comment_34a.mp3', 'upvotes': 33, 'length': 0.5412244897959184, 'replies': []}, {'text': 'Cat', 'img': './data/img/comment_35a.png', 'audio': './data/audio/comment_35a.mp3', 'upvotes': 25, 'length': 0.6198639455782313, 'replies': []}, {'text': 'Cancer', 'img': './data/img/comment_36a.png', 'audio': './data/audio/comment_36a.mp3', 'upvotes': 18, 'length': 0.7771428571428571, 'replies': []}, {'text': 'The government', 'img': './data/img/comment_37a.png', 'audio': './data/audio/comment_37a.mp3', 'upvotes': 18, 'length': 0.939047619047619, 'replies': []}, {'text': "A person's worst enemy is their own mind.", 'img': './data/img/comment_38a.png', 'audio': './data/audio/comment_38a.mp3', 'upvotes': 16, 'length': 2.405442176870748, 'replies': [{'text': 'A crazy ex girlfriend', 'img': './data/img/comment_38b.png', 'audio': './data/audio/comment_38b.mp3', 'upvotes': 9, 'length': 1.6282993197278912}]}, {'text': '"The Man".', 'img': './data/img/comment_39a.png', 'audio': './data/audio/comment_39a.mp3', 'upvotes': 13, 'length': 0.7216326530612245, 'replies': []}, {'text': 'It is no surprise that I am my own worst enemy', 'img': './data/img/comment_40a.png', 'audio': './data/audio/comment_40a.mp3', 'upvotes': 12, 'length': 2.724625850340136, 'replies': []}, {'text': 'STDs.', 'img': './data/img/comment_41a.png', 'audio': './data/audio/comment_41a.mp3', 'upvotes': 11, 'length': 1.0408163265306123, 'replies': [{'text': 'It’s def birds', 'img': './data/img/comment_41b.png', 'audio': './data/audio/comment_41b.mp3', 'upvotes': 10, 'length': 1.2443537414965986}]}, {'text': 'Seagulls', 'img': './data/img/comment_42a.png', 'audio': './data/audio/comment_42a.mp3', 'upvotes': 12, 'length': 0.9714285714285714, 'replies': []}, {'text': 'These days? Apparently Facebook/ Meta', 'img': './data/img/comment_43a.png', 'audio': './data/audio/comment_43a.mp3', 'upvotes': 9, 'length': 2.641360544217687, 'replies': []}, {'text': 'A crazy woman', 'img': './data/img/comment_44a.png', 'audio': './data/audio/comment_44a.mp3', 'upvotes': 7, 'length': 1.0593197278911564, 'replies': [{'text': 'My neighbour Jerold 😡', 'img': './data/img/comment_44b.png', 'audio': './data/audio/comment_44b.mp3', 'upvotes': 9, 'length': 2.5072108843537415}]}, {'text': 'Other humans.', 'img': './data/img/comment_45a.png', 'audio': './data/audio/comment_45a.mp3', 'upvotes': 8, 'length': 0.9991836734693877, 'replies': [{'text': "pig with metal wings and that shoots laser out of It's eyes", 'img': './data/img/comment_45b.png', 'audio': './data/audio/comment_45b.mp3', 'upvotes': 5, 'length': 3.1779591836734693}]}, {'text': 'Ourselves', 'img': './data/img/comment_46a.png', 'audio': './data/audio/comment_46a.mp3', 'upvotes': 7, 'length': 1.0546938775510204, 'replies': [{'text': "I'm glad that both of my immediate thoughts are the top answers.", 'img': './data/img/comment_46b.png', 'audio': './data/audio/comment_46b.mp3', 'upvotes': 8, 'length': 3.4138775510204082}]}]}
-
+data = {
+   "title":{
+      "text":"What isn't a cult but feels like a cult?",
+      "img":"./data/img/title.png",
+      "audio":"./data/audio/title.mp3",
+      "length":2.985333333333333
+   },
+   "total_length":202.57266666666663,
+   "comments":[
+      {
+         "text":" Being a fan of certain movies or shows. Some people just take it way too far.",
+         "img":"./data/img/comment_0a.png",
+         "audio":"./data/audio/comment_0a.mp3",
+         "upvotes":33900,
+         "length":4.758,
+         "replies":[
+            {
+               "text":" The Office anyone?",
+               "img":"./data/img/comment_0b.png",
+               "audio":"./data/audio/comment_0b.mp3",
+               "upvotes":15500,
+               "length":1.5448333333333333
+            }
+         ]
+      },
+      {
+         "text":" My gym",
+         "img":"./data/img/comment_1a.png",
+         "audio":"./data/audio/comment_1a.mp3",
+         "upvotes":20400,
+         "length":1.1268333333333334,
+         "replies":[
+            {
+               "text":" At Globo Gym we’re better than you and we know it.",
+               "img":"./data/img/comment_1b.png",
+               "audio":"./data/audio/comment_1b.mp3",
+               "upvotes":16400,
+               "length":2.772666666666667
+            }
+         ]
+      },
+      {
+         "text":" All of those do-it-at-home, online marketing that I see a lot of women in my life get sucked into, where you make a ton of posts and hype up whatever occupation you\\'re in as a \"lifestyle\", with promises of good pay, great social circles, and fulfilling incentives",
+         "img":"./data/img/comment_2a.png",
+         "audio":"./data/audio/comment_2a.mp3",
+         "upvotes":19900,
+         "length":13.796333333333333,
+         "replies":[
+            {
+               "text":" MLM and cryptobros.",
+               "img":"./data/img/comment_2b.png",
+               "audio":"./data/audio/comment_2b.mp3",
+               "upvotes":8800,
+               "length":2.0411666666666664
+            }
+         ]
+      },
+      {
+         "text":" Hustle Culture. I used to work with a guy who bragged he \"only sleeps 10 minutes a night\" because as soon as he got off he\\'d go do gigs or play with crypto all night. The only things in his life, supposedly, was \"banging bitches and getting bags.\" He\\'s far from the only person who thinks it\\'s \"Chad\" to run yourself ragged and never take care of yourself.",
+         "img":"./data/img/comment_3a.png",
+         "audio":"./data/audio/comment_3a.mp3",
+         "upvotes":19200,
+         "length":18.655,
+         "replies":[
+            {
+               "text":" Crypto has definitely gotten a little culty.",
+               "img":"./data/img/comment_3b.png",
+               "audio":"./data/audio/comment_3b.mp3",
+               "upvotes":7500,
+               "length":2.7203333333333335
+            }
+         ]
+      },
+      {
+         "text":" Employers who express themselves as a unit, such as we are a family/pack, etc.",
+         "img":"./data/img/comment_4a.png",
+         "audio":"./data/audio/comment_4a.mp3",
+         "upvotes":14400,
+         "length":5.567666666666667,
+         "replies":[
+            {
+               "text":" My boss told me that once and I told him he was full of shit. Needless to say, my dad no longer required my services in the family business.",
+               "img":"./data/img/comment_4b.png",
+               "audio":"./data/audio/comment_4b.mp3",
+               "upvotes":14000,
+               "length":8.258333333333333
+            }
+         ]
+      },
+      {
+         "text":" Kpop fandoms",
+         "img":"./data/img/comment_5a.png",
+         "audio":"./data/audio/comment_5a.mp3",
+         "upvotes":9100,
+         "length":1.5971666666666666,
+         "replies":[
+            {
+               "text":" Kpop industry in general. These companies are training idols as kids and after years of training to be a \"perfect\" idol it isn\\'t even certain that you would debut. Also, companies tend to fixate on weight and causes a lot of idols to have eating disorders. Plus, most idols can\\'t even date because the companies don\\'t allow it, the fans freak out like they fucking own the idol, and media shames them for having a relationship out on the public. The way I see it is if you are an idol in the kpop industry, they basically own you.",
+               "img":"./data/img/comment_5b.png",
+               "audio":"./data/audio/comment_5b.mp3",
+               "upvotes":4900,
+               "length":27.562833333333334
+            }
+         ]
+      },
+      {
+         "text":" Texas A&M University",
+         "img":"./data/img/comment_6a.png",
+         "audio":"./data/audio/comment_6a.mp3",
+         "upvotes":8900,
+         "length":2.067333333333333,
+         "replies":[
+            {
+               "text":" Am an Aggie. Our fave saying is “From the outside looking in, you can’t understand it. From the inside looking out, you can’t explain it.” 100% a cult.",
+               "img":"./data/img/comment_6b.png",
+               "audio":"./data/audio/comment_6b.mp3",
+               "upvotes":5400,
+               "length":9.956333333333333
+            }
+         ]
+      },
+      {
+         "text":" Blue Öysters. Those sons of bitches are hard as hell.",
+         "img":"./data/img/comment_7a.png",
+         "audio":"./data/audio/comment_7a.mp3",
+         "upvotes":6300,
+         "length":3.5301666666666667,
+         "replies":[
+            {
+               "text":" They don't even fear the reaper!",
+               "img":"./data/img/comment_7b.png",
+               "audio":"./data/audio/comment_7b.mp3",
+               "upvotes":2400,
+               "length":1.9628333333333334
+            }
+         ]
+      },
+      {
+         "text":" AA",
+         "img":"./data/img/comment_8a.png",
+         "audio":"./data/audio/comment_8a.mp3",
+         "upvotes":6200,
+         "length":1.0746666666666667,
+         "replies":[
+            {
+               "text":" My dumbass just got home from a terrible trip the other day. I read this and was confused as to why American Airlines is considered a cult.",
+               "img":"./data/img/comment_8b.png",
+               "audio":"./data/audio/comment_8b.mp3",
+               "upvotes":4900,
+               "length":7.683666666666666
+            }
+         ]
+      },
+      {
+         "text":" LulaRoe lovers",
+         "img":"./data/img/comment_9a.png",
+         "audio":"./data/audio/comment_9a.mp3",
+         "upvotes":4600,
+         "length":1.6755,
+         "replies":[
+            {
+               "text":" Any kind of pyramid scheme, for that matter",
+               "img":"./data/img/comment_9b.png",
+               "audio":"./data/audio/comment_9b.mp3",
+               "upvotes":2200,
+               "length":3.1121666666666665
+            }
+         ]
+      },
+      {
+         "text":" Nickocado Avodaco subscribers",
+         "img":"./data/img/comment_10a.png",
+         "audio":"./data/audio/comment_10a.mp3",
+         "upvotes":4400,
+         "length":2.4591666666666665,
+         "replies":[
+            {
+               "text":" I feel like a lot of people have subbed to him to watch him slowly kill himself/to laugh at him. I've never actually seen anyone talk positively about him in his current state",
+               "img":"./data/img/comment_10b.png",
+               "audio":"./data/audio/comment_10b.mp3",
+               "upvotes":2400,
+               "length":9.303166666666666
+            }
+         ]
+      },
+      {
+         "text":" Any kind of brand loyalty",
+         "img":"./data/img/comment_11a.png",
+         "audio":"./data/audio/comment_11a.mp3",
+         "upvotes":4300,
+         "length":1.989,
+         "replies":[
+            {
+               "text":" “I’d rather push a Ford than drive a Chevy!” But… why though!?",
+               "img":"./data/img/comment_11b.png",
+               "audio":"./data/audio/comment_11b.mp3",
+               "upvotes":1700,
+               "length":4.209333333333333
+            }
+         ]
+      },
+      {
+         "text":" Army",
+         "img":"./data/img/comment_12a.png",
+         "audio":"./data/audio/comment_12a.mp3",
+         "upvotes":4000,
+         "length":1.0485,
+         "replies":[
+            {
+               "text":" Every Marine I've spoken to gave me cultish vibes too.",
+               "img":"./data/img/comment_12b.png",
+               "audio":"./data/audio/comment_12b.mp3",
+               "upvotes":2200,
+               "length":3.3473333333333333
+            }
+         ]
+      },
+      {
+         "text":" Politics",
+         "img":"./data/img/comment_13a.png",
+         "audio":"./data/audio/comment_13a.mp3",
+         "upvotes":4000,
+         "length":1.362,
+         "replies":[
+            {
+               "text":" So many people have made their political party of choice into their personality and it's unbearable. Agree or gtfo is pretty much what it has become. So yeah pretty cult like.",
+               "img":"./data/img/comment_13b.png",
+               "audio":"./data/audio/comment_13b.mp3",
+               "upvotes":1400,
+               "length":10.113
+            }
+         ]
+      },
+      {
+         "text":" Peloton",
+         "img":"./data/img/comment_14a.png",
+         "audio":"./data/audio/comment_14a.mp3",
+         "upvotes":3500,
+         "length":1.4403333333333332,
+         "replies":[
+            {
+               "text":" I've been saying this for like two years!! I know someone with a peloton and I am very happy that it got them to lose weight and be active, but man they way they talked about it and posted on Facebook about it made me feel like it was a cult lmao",
+               "img":"./data/img/comment_14b.png",
+               "audio":"./data/audio/comment_14b.mp3",
+               "upvotes":1100,
+               "length":12.542333333333334
+            }
+         ]
+      },
+      {
+         "text":" Apple.",
+         "img":"./data/img/comment_15a.png",
+         "audio":"./data/audio/comment_15a.mp3",
+         "upvotes":3100,
+         "length":0.9963333333333333,
+         "replies":[
+            {
+               "text":" I worked as callcenter agent, internet helpdesk once. Sometimes I\\'d ask people to do something on their laptop, and they would say \"I don\\'t have a laptop, I have a macbook\" If I once more said \"laptop\" in the conversation, while being focussed on solving the problem, they would shout at me \"I DONT HAVE A LAPTOP I HAVE A MACBOOK.\" I guess, if you pay that much you want some acknowledgement? It didn\\'t happen just once. It happend often. Edit: wow. 1.9k upvotes. Glad its not just me who thinks its cringy.",
+               "img":"./data/img/comment_15b.png",
+               "audio":"./data/audio/comment_15b.mp3",
+               "upvotes":2000,
+               "length":29.313
+            }
+         ]
+      }
+   ]
+}
 print(data)
+
+data_object["characters_used"] += len(data["title"]["text"])
+save_data_object()
+
+for i in data["title"]["comments"]:
+   
+
+
 video_creator = Video_Creator(data)
 video_creator.create()
