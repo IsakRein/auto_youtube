@@ -4,8 +4,8 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from audio_manager import audio_manager
-from data_manager import secret
+from src.audio_manager import audio_manager
+from src.data_manager import secret
 
 class Webscraper:
     def __init__(self) -> None:
@@ -116,6 +116,10 @@ class Webscraper:
         op = webdriver.ChromeOptions()
         prefs = {"profile.default_content_setting_values.notifications": 2}
         op.add_experimental_option("prefs", prefs)
+        op.add_argument('--headless')
+        op.add_argument('--no-sandbox')
+        op.add_argument('--disable-dev-shm-usage')
+
         driver = webdriver.Chrome(service=ser, options=op)
 
         # Get url
@@ -200,7 +204,9 @@ class Webscraper:
         except:
             upvotes = "-1"
         
-        if "k" in upvotes:
+        if "Vote" in upvotes:
+            upvotes = "-1"
+        elif "k" in upvotes:
             if "." in upvotes:
                 number_str = upvotes[:-1]
                 number = int(number_str.split(".")[0])

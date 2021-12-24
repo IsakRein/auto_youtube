@@ -4,3 +4,4 @@ secret.json
 chromedriver
 data/
 __pycache__/
+log/

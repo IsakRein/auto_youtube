@@ -3,7 +3,7 @@ from mutagen.mp3 import MP3
 import boto3
 from contextlib import closing
 import os
-from data_manager import secret, data_object, save_data_object
+from src.data_manager import secret, data_object, save_data_object
 
 class AudioManager:
     def authenticate(self):
@@ -12,8 +12,13 @@ class AudioManager:
             aws_secret_access_key=secret["aws_secret_access_key"],
             region_name="eu-north-1"
             ).client('polly')
-    
+
     def save_audio(self, text, path):
+        tts = gTTS(text)
+        tts.save(path)
+        return self.get_audio_length(path)
+
+    def save_audio_production(self, text, path):
         response = self.polly_client.synthesize_speech(
             Engine='standard',
             LanguageCode='en-US',
@@ -31,7 +36,7 @@ class AudioManager:
                 file.write(stream.read())
 
         return self.get_audio_length(path)
-
+ 
     def get_audio_length(self, path):
         clip = MP3(path)
         return clip.info.length
