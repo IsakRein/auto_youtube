@@ -1,2 +1,2 @@
 # Auto Youtube
-A youtube channel that runs itself. Check the final product out at https://www.youtube.com/channel/UCtbKjlmMsvhF844d7BIzTrw
+A youtube channel that runs itself. Check out the result at: https://www.youtube.com/channel/UCtbKjlmMsvhF844d7BIzTrw
