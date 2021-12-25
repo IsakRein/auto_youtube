@@ -4,8 +4,8 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from src.audio_manager import audio_manager
-from src.data_manager import secret
+from audio_manager import audio_manager
+from data_manager import secret
 
 class Webscraper:
     def __init__(self) -> None:
@@ -224,6 +224,5 @@ class Webscraper:
             audio_length = 0
 
         return text, img_path, audio_path, upvotes, audio_length + 0.5 # 0.5 sec of rest
-
 
 webscraper = Webscraper()

@@ -3,7 +3,7 @@ from mutagen.mp3 import MP3
 import boto3
 from contextlib import closing
 import os
-from src.data_manager import secret, data_object, save_data_object
+from data_manager import secret, data_object, save_data_object
 
 class AudioManager:
     def authenticate(self):

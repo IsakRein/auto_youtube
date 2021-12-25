@@ -1,1 +1,11 @@
-{"characters_used": 34450}
+{
+    "characters_used": 34450,
+    "videos": [
+        {
+            "title": "non existent",
+            "background": "background-1.mp4",
+            "music": "music-1.mp3",
+            "output": "output0.mp4"
+        }
+    ]
+}
