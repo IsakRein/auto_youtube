@@ -61,7 +61,7 @@ class Video_Creator:
             fps=24
         )
 
-        video_object["title"] = data["title"]
+        video_object["title"] = data["title"]["text"]
 
         return video_object
 

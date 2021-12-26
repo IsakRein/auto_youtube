@@ -17,28 +17,37 @@ class Main:
         logging.basicConfig(level=level, format=fmt)
 
     def ask_reddit(self):
-        # Clear previous temp data
-        logging.info("Clearing data")
-        self.clear_data()
+        # # Clear previous temp data
+        # logging.info("Clearing data")
+        # self.clear_data()
         
-        # Authenticate
-        logging.info("Authenticating")
-        webscraper.authenticate()
-        audio_manager.authenticate()
+        # # Authenticate
+        # logging.info("Authenticating")
+        # webscraper.authenticate()
+        # audio_manager.authenticate()
         
-        # Get data
-        logging.info("Getting data")
-        post_url = f"https://reddit.com/{webscraper.get_todays_url()}?sort=top"
-        content_data = webscraper.get_data(post_url, 200)
+        # # Get data
+        # logging.info("Getting data")
+        # post_url = f"https://reddit.com/{webscraper.get_todays_url()}?sort=top"
+        # content_data = webscraper.get_data(post_url, 200)
         
-        # Create video
-        logging.info("Creating video")
-        video_data = video_creator.create(content_data)
+        # # Create video
+        # logging.info("Creating video")
+        # video_data = video_creator.create(content_data)
 
-        # Create thumbnail
-        logging.info("Creating thumbnail")  
-        video_data["thumbnail"] = thumbnail_manager.generate(video_data)
+        # # Create thumbnail
+        # logging.info("Creating thumbnail")  
+        # video_data["thumbnail"] = thumbnail_manager.generate(video_data)
         
+        video_data = {
+            "video_number": 1,
+            "background": "data/backgrounds/background1.mp4",
+            "music": "data/music/music4.mp3",
+            "video_name": "data/output/video1.mp4",
+            "title": "If you were handed 10 billion dollars right now, what would you still never buy?",
+            "thumbnail": "data/thumbnails/thumbnail1.png"
+        }
+
         # Update local database
         logging.info("Updating database")  
         meta_data.append("videos", video_data)
