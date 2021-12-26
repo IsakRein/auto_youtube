@@ -1,29 +1,58 @@
+import os
+import logging
+
 from webscraper import webscraper
 from video_creator import video_creator
 from youtube_manager import youtube_manager 
 from audio_manager import audio_manager
-from data_manager import data_object, save_data_object
+from data_manager import meta_data
 from thumbnail_manager import thumbnail_manager
 
+# GOAL: 
+# This script should be run from a terminal with no parameters, and at the end of the process, the video should be uploaded to youtube.
 class Main:
+    def __init__(self):
+        level = logging.INFO
+        fmt = '[%(levelname)s] %(asctime)s - %(message)s'
+        logging.basicConfig(level=level, format=fmt)
+
     def ask_reddit(self):
+        # Clear previous temp data
+        logging.info("Clearing data")
+        self.clear_data()
+        
+        # Authenticate
+        logging.info("Authenticating")
         webscraper.authenticate()
         audio_manager.authenticate()
-        webscraper.clear_data()
-        post_url = "https://reddit.com/" + webscraper.get_todays_url() + "?sort=top"
         
-        thumbnail_manager.generate("cash", "data/thumbnails/thumbnail0.png")
+        # Get data
+        logging.info("Getting data")
+        post_url = f"https://reddit.com/{webscraper.get_todays_url()}?sort=top"
+        content_data = webscraper.get_data(post_url, 200)
+        
+        # Create video
+        logging.info("Creating video")
+        video_data = video_creator.create(content_data)
 
-        input(post_url)
+        # Create thumbnail
+        logging.info("Creating thumbnail")  
+        video_data["thumbnail"] = thumbnail_manager.generate(video_data)
+        
+        # Update local database
+        logging.info("Updating database")  
+        meta_data.append("videos", video_data)
 
-        data = webscraper.get_data(post_url, 200)
+        # Upload video
+        logging.info("Uploading video")  
+        youtube_manager.upload(video_data)
 
-        video_obj = video_creator.create(data)
-
-        youtube_manager.upload(video_obj)
-
-        data_object["videos"].append(video_obj)
-        save_data_object()
-
+    
+    def clear_data(self):
+        os.system("rm -r data/img")
+        os.system("rm -r data/audio")
+        os.system("mkdir data/img")
+        os.system("mkdir data/audio")
+    
 main = Main()
 main.ask_reddit()

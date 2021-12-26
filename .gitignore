@@ -5,3 +5,6 @@ chromedriver
 data/
 __pycache__/
 log/
+*.pickle
+credential_sample.json
+google_secret.json

@@ -8,15 +8,17 @@ from PIL import Image
 from video_creator import WIDTH
 
 class Thumbnail_Manager:
-    def generate(self, search, path):
-        self.get_image(search, path)
+    def generate(self, video_data):
+        path = f"data/thumbnails/thumbnail{video_data['video_number']}.png"
+        self.get_image(video_data["title"], path)
         self.resize_img(path)
         self.edit_img(path)
+        return path
 
     def get_image(self, search, path):
-        client_id = secret["unsplash_access_key"]
-        client_secret = secret["unsplash_secret_key"]
-        redirect_uri = secret["unsplash_secret_key"]
+        client_id = secret.get("unsplash_access_key")
+        client_secret = secret.get("unsplash_secret_key")
+        redirect_uri = secret.get("unsplash_secret_key")
         code = ""
 
         auth = Auth(client_id, client_secret, redirect_uri, code=code)
@@ -41,7 +43,6 @@ class Thumbnail_Manager:
 
     def resize_img(self, path):
         img = Image.open(path)
-        print(img.width, img.height)
 
         if (img.width / img.height > 1280/620):
             new_height = img.height

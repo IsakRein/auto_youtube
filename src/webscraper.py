@@ -1,5 +1,4 @@
 import requests
-import os
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -7,15 +6,21 @@ from selenium.webdriver.common.by import By
 from audio_manager import audio_manager
 from data_manager import secret
 
+
 class Webscraper:
     def __init__(self) -> None:
         self.base_url = "https://oauth.reddit.com/"
 
         self.auth = requests.auth.HTTPBasicAuth(
-            secret["client"], secret["token"])
-        self.auth_data = {'grant_type': 'password',
-                     'username': secret["user_name"],
-                     'password': secret["password"]}
+            secret.get("client"),
+            secret.get("token")
+        )
+
+        self.auth_data = {
+            'grant_type': 'password',
+            'username': secret.get("user_name"),
+            'password': secret.get("password")
+        }
 
     def authenticate(self) -> None:
         headers = {'User-Agent': 'MyBot/0.0.1'}
@@ -33,12 +38,6 @@ class Webscraper:
         post = self.get_posts("r/Askreddit/top/?t=day")[0]
         url = post["url"].split("reddit.com/")[1]
         return url
-
-    def clear_data(self):
-        os.system("rm -r data/img")
-        os.system("rm -r data/audio")
-        os.system("mkdir data/img")
-        os.system("mkdir data/audio")
 
     def get_data(self, url, video_length):
         self.data = {}
@@ -67,9 +66,6 @@ class Webscraper:
                 text2, img_path2, audio_path2, upvotes2, audio_length2 = self.get_reddit_comment(
                     str(index)+"b", xpath, comments_container
                 )
-                print("-----")
-                print(upvotes1, text1)
-                print(upvotes2, text2)
 
                 self.data["comments"].append({})
                 self.data["comments"][index]["text"] = text1
@@ -89,18 +85,19 @@ class Webscraper:
                         self.data["comments"][index]["replies"][0]["upvotes"] = upvotes2
                         self.data["comments"][index]["replies"][0]["length"] = audio_length2
                         self.data["total_length"] += audio_length2
-                except: 
-                    print("error loading subcomment")
+                except:
+                    pass
                 # loop through divs until the div that says more replies (end of current comment)
                 text = ""
                 no_more_divs = False
                 while(text[:7] != "level 1"):
                     xpath += "/following-sibling::div"
                     try:
-                        text = comments_container.find_element(By.XPATH, xpath).text
+                        text = comments_container.find_element(
+                            By.XPATH, xpath).text
                     except:
                         no_more_divs = True
-               
+
                 if (no_more_divs):
                     break
 
@@ -112,7 +109,7 @@ class Webscraper:
 
     def init_driver(self, url):
         # Driver init
-        ser = Service(secret["chromedriver"])
+        ser = Service(secret.get("chromedriver"))
         op = webdriver.ChromeOptions()
         prefs = {"profile.default_content_setting_values.notifications": 2}
         op.add_experimental_option("prefs", prefs)
@@ -165,7 +162,8 @@ class Webscraper:
 
         # ---- audio
         audio_path = self.audio_folder + "title.mp3"
-        audio_length = audio_manager.save_audio(text, audio_path) + 1 # 1 sec of rest
+        audio_length = audio_manager.save_audio(
+            text, audio_path) + 1  # 1 sec of rest
 
         self.data["title"]["text"] = text
         self.data["title"]["img"] = img_path
@@ -195,7 +193,6 @@ class Webscraper:
         text = ""
         for sub_text in texts:
             text += " " + sub_text.get_attribute("innerText")
-        
 
         # ---- upvotes
         try:
@@ -203,7 +200,7 @@ class Webscraper:
                 By.XPATH, './/button[@aria-label="upvote"]/following-sibling::div').get_attribute("innerText")
         except:
             upvotes = "-1"
-        
+
         if "Vote" in upvotes:
             upvotes = "-1"
         elif "k" in upvotes:
@@ -223,6 +220,7 @@ class Webscraper:
         else:
             audio_length = 0
 
-        return text, img_path, audio_path, upvotes, audio_length + 0.5 # 0.5 sec of rest
+        return text, img_path, audio_path, upvotes, audio_length + 0.5  # 0.5 sec of rest
+
 
 webscraper = Webscraper()

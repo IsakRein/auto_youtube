@@ -1,12 +1,8 @@
 import os
 import random
 
-from typing import final
 from moviepy import editor
-from moviepy.video.VideoClip import VideoClip
-from moviepy.video.fx.all import crop
-
-from data_manager import data_object, save_data_object
+from data_manager import meta_data
 
 HEIGHT = 1080
 WIDTH = 1920
@@ -14,20 +10,15 @@ WIDTH = 1920
 class Video_Creator:
     def create(self, data):
         self.data = data
-
         video_object = self.select_meta_data()
 
-        background_path =  "data/backgrounds/" + video_object["background"]   
-        music_path =  "data/music/" + video_object["music"]      
-
-        background_video = editor.VideoFileClip(background_path, audio=False)
-
+        background_video = editor.VideoFileClip(video_object["background"], audio=False)
         self.final_video = background_video.resize(width=WIDTH, height=HEIGHT)
-
         background_loop_count = (
             self.data["total_length"] // self.final_video.duration) + 1
         self.final_video = self.final_video.loop(background_loop_count)
-        self.final_audio = editor.AudioFileClip(music_path).volumex(0.3)
+        
+        self.final_audio = editor.AudioFileClip(video_object["music"]).volumex(0.3)
 
         if self.final_video.duration < self.final_audio.duration:
             self.final_audio = self.final_audio.subclip(
@@ -62,7 +53,7 @@ class Video_Creator:
 
         self.final_video = self.final_video.set_audio(self.final_audio)
         self.final_video.write_videofile(
-            "data/output/" + video_object["video_name"],
+            video_object["video_name"],
             codec='libx264',
             audio_codec='aac',
             temp_audiofile='data/temp/temp-audio.m4a',
@@ -75,7 +66,6 @@ class Video_Creator:
         return video_object
 
     def add_clips(self, img_list, audio_list, current_data):
-        print(current_data)
         total_height = sum([x.size[1] for x in img_list])
         total_duration = sum([x["length"] for x in current_data])
 
@@ -105,7 +95,7 @@ class Video_Creator:
     def select_meta_data(self):
         music_files = os.listdir("data/music")
         background_files = os.listdir("data/backgrounds")
-        videos = data_object["videos"]
+        videos = meta_data.get("videos")
 
         go_back = 5
 
@@ -119,14 +109,14 @@ class Video_Creator:
             if (music not in previous_music and background not in previous_backgrounds):
                 break 
 
-        video_number = len(data_object)
+        video_number = len(videos)
         video_name = "video" + str(video_number) + ".mp4"
 
         return {
             "video_number": video_number,
-            "background": background,
-            "music": music,
-            "output": video_name
+            "background": f"data/backgrounds/{background}",
+            "music": f"data/music/{music}",
+            "video_name": f"data/output/{video_name}"
         }
 
 video_creator = Video_Creator()     
